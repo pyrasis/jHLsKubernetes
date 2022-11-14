@@ -1,14 +1,15 @@
 Vagrant.configure("2") do |config|
   config.vm.boot_timeout = 3000
-  config.vm.provider "virtualbox" do |v|
-    v.memory = 2048
-    v.cpus = 2
-  end
 
   config.vm.define "master" do |master|
     master.vm.box = "ubuntu/jammy64"
     master.vm.network "private_network", ip: "192.168.56.10"
     master.vm.hostname = "master"
+
+    master.vm.provider "virtualbox" do |v|
+      v.memory = 4096
+      v.cpus = 4
+    end
 
     master.vm.provision "0", type: "shell", preserve_order: true, privileged: true, inline: <<-EOC
 cat <<-'EOF' >/etc/modules-load.d/kubernetes.conf
@@ -74,6 +75,11 @@ echo 'alias k=kubectl' >>/home/vagrant/.bashrc
       worker.vm.box = "ubuntu/jammy64"
       worker.vm.network "private_network", ip: "192.168.56.1#{i}"
       worker.vm.hostname = "worker#{i}"
+
+      worker.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus = 2
+      end
 
       worker.vm.provision "0", type: "shell", preserve_order: true, privileged: true, inline: <<-EOC
 cat <<-'EOF' >/etc/modules-load.d/kubernetes.conf
