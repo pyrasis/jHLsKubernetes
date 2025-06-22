@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: mysql
-          image: mysql:5.7
+          image: mysql:8.0
           ports:
             - protocol: TCP
               containerPort: 3306
